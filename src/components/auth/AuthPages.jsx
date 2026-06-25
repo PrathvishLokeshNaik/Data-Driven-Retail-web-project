@@ -42,7 +42,12 @@ export const SignInPage = () => {
             });
             const data = await response.json();
             if (response.ok) {
+                localStorage.setItem(
+                    'user',
+                    JSON.stringify(data.user)
+                );
                 setIsAuthenticated(true); 
+                navigate('/DashboardPage');
             } else {
                 setError(data.message || 'Authentication failed. Please check your credentials.');
             }
@@ -74,7 +79,7 @@ export const SignInPage = () => {
                 <div className="space-y-4">
                     <input 
                         type="email" 
-                        placeholder="Email / Username" 
+                        placeholder="Email" 
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className={inputStyle(theme)}
@@ -226,7 +231,7 @@ export const SignUpPage = () => {
 
                     <p className="text-center text-slate-400 text-sm pt-4">
                         Already have an account? 
-                        <Link to="/signin" className={textLinkStyle.replace('cyan', 'purple')}>Sign in</Link>
+                        <Link to="/signin" className={purpleVisibleLinkStyle.replace('cyan', 'purple')}>Sign in</Link>
                     </p>
                 </div>
             </div>
@@ -238,6 +243,8 @@ export const SignUpPage = () => {
 
 export const ForgotPasswordPage = () => {
     const { theme } = useAuth();
+    const purpleVisibleLinkStyle = "text-purple-300 hover:text-purple-200 font-bold ml-3 underline-offset-2 hover:underline transition relative z-20";
+
     return (
         <div className="flex flex-col items-center justify-center p-6 sm:p-8 flex-grow py-12">
             <div className={cardStyle}>
@@ -260,7 +267,7 @@ export const ForgotPasswordPage = () => {
                     </Link>
                     <p className="text-center text-slate-400 text-sm pt-4">
                         Remember your password? 
-                        <Link to="/signin" className={textLinkStyle}>Sign in</Link>
+                        <Link to="/signin" className={purpleVisibleLinkStyle}>Sign in</Link>
                     </p>
                 </div>
             </div>
@@ -335,7 +342,7 @@ export const ResetPasswordPage = () => {
                     </Link>
                     <p className="text-center text-slate-400 text-sm pt-4">
                         Remember your password? 
-                        <Link to="/signin" className={textLinkStyle}>Sign in</Link>
+                        <Link to="/signin" className={purpleVisibleLinkStyle}>Sign in</Link>
                     </p>
                 </div>
             </div>

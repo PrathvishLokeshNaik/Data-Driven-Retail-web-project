@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs'); // Needed for password comparison
 const User = require('../models/user.model'); // Import the shared User Model
+const jwt = require("jsonwebtoken");
 
 // -------------------------------------------------------------------------
 // POST route for /signin
 // -------------------------------------------------------------------------
-router.post('/signin', async (req, res) => {
+router.post('/', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -15,6 +16,7 @@ router.post('/signin', async (req, res) => {
 
     try {
         const user = await User.findOne({ email });
+        console.log("user:",user);
 
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials.' }); // Use generic message for security
@@ -38,10 +40,36 @@ router.post('/signin', async (req, res) => {
         // ---------------------------------------------
 
         // Respond with success
-        res.status(200).json({ 
-            message: 'Sign in successful. Welcome to VaapyaarIQ!', 
-            user: { email: user.email, username: user.username }
-        });
+        const token =
+jwt.sign(
+
+{
+id:user._id,
+email:user.email
+},
+
+process.env.JWT_SECRET,
+
+{
+expiresIn:"7d"
+}
+
+);
+
+res.status(200).json({
+
+message:
+'Sign in successful',
+
+token,
+
+user:{
+id:user._id,
+username:user.username,
+email:user.email
+}
+
+});
 
     } catch (error) {
         console.error('Login error:', error);
